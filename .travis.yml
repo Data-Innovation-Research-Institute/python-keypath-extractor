@@ -1,0 +1,7 @@
+language: python
+python:
+  - "3.6"
+
+# command to run tests
+script:
+  - PYTHONPATH=keypath_extractor python tests/test_keypath_extractor.py
