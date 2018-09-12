@@ -12,7 +12,7 @@ Import the ```KeypathExtractor``` class:
 from keypath_extractor import KeypathExtractor
 ```
 
-Create a dict to extract values from:
+Create a dictionary to extract values from:
 
 ```python
 data_object = {
@@ -27,13 +27,13 @@ data_object = {
 }
 ```
 
-Keypaths are represented by two-element tuples that contain the name of the key for the extracted value, ```Doors``` and the keypath for extracting the value, ```car.number_of_doors```:
+Keypaths are represented by two-element tuples that contain the name of the key for the extracted value, ```Doors```, and the keypath for extracting the value, ```car.number_of_doors```:
 
 ```python
 ('Doors', 'car.number_of_doors')
 ```
 
-Create a list of key/keypaths tuples to use to extract values:
+Create a list of keypath tuples to use to extract values:
 
 ```python
 keypaths = [
@@ -49,7 +49,7 @@ extractor = KeypathExtractor(keypaths)
 values = extractor.extract(data_object)
 ```
 
-After extraction, the ```values``` dict contains the following key/value pairs:
+After extraction, the ```values``` dictionary contains the following key/value pairs:
 
 ```python
 {
