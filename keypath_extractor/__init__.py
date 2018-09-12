@@ -1,1 +1,1 @@
-from .keypath_extractor import KeypathExtractor, KeypathError
+from .keypath_extractor import KeypathExtractor

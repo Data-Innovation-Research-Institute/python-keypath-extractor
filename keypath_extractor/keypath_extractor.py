@@ -1,15 +1,11 @@
 import dpath
 
 
-class KeypathError(Exception):
-    pass
-
-
 class KeypathExtractor:
 
     def __init__(self, keypaths):
         if keypaths is None:
-            raise Exception('keypaths cannot be None')
+            raise ValueError('keypaths cannot be None')
         else:
             self.keypaths = keypaths
 
@@ -18,12 +14,9 @@ class KeypathExtractor:
         for key, keypath in self.keypaths:
             if key:
                 if keypath:
-                    try:
-                        values[key] = dpath.util.get(data_object, keypath, separator='.')
-                    except KeyError as e:
-                        raise KeypathError(e)
+                    values[key] = dpath.util.get(data_object, keypath, separator='.')
                 else:
-                    raise KeypathError('keypath cannot be None or empty')
+                    raise KeyError('keypath cannot be None or empty')
             else:
-                raise KeyError('key cannot be None or empty')
+                raise ValueError('key cannot be None or empty')
         return values

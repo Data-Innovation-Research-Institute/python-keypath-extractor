@@ -1,6 +1,6 @@
 import unittest
 
-from keypath_extractor import KeypathExtractor, KeypathError
+from keypath_extractor import KeypathExtractor
 
 
 class KeypathExtractorTest(unittest.TestCase):
@@ -18,7 +18,7 @@ class KeypathExtractorTest(unittest.TestCase):
 
     def test_no_keypaths(self):
         keypaths = None
-        self.assertRaises(Exception, KeypathExtractor, keypaths)
+        self.assertRaises(ValueError, KeypathExtractor, keypaths)
 
     def test_empty_keypaths(self):
         keypaths = []
@@ -43,35 +43,35 @@ class KeypathExtractorTest(unittest.TestCase):
             (None, 'car.number_of_doors'),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeyError, extractor.extract, self.data_object)
+        self.assertRaises(ValueError, extractor.extract, self.data_object)
 
     def test_empty_key(self):
         keypaths = [
             ('', 'car.number_of_doors'),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeyError, extractor.extract, self.data_object)
+        self.assertRaises(ValueError, extractor.extract, self.data_object)
 
     def test_no_keypath(self):
         keypaths = [
             ('Doors', None),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeypathError, extractor.extract, self.data_object)
+        self.assertRaises(KeyError, extractor.extract, self.data_object)
 
     def test_empty_keypath(self):
         keypaths = [
             ('Doors', ''),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeypathError, extractor.extract, self.data_object)
+        self.assertRaises(KeyError, extractor.extract, self.data_object)
 
     def test_invalid_keypath(self):
         keypaths = [
             ('Doors', 'car.number_of_windows'),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeypathError, extractor.extract, self.data_object)
+        self.assertRaises(KeyError, extractor.extract, self.data_object)
 
 
 if __name__ == '__main__':
