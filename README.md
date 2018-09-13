@@ -63,7 +63,7 @@ After extraction, the ```values``` dictionary contains the following key/value p
 
 ## Separators
 
-The default separator is a dot. Supply the optional ```separator``` argument to the ```KeypathExtractor``` to use a different separator:
+The default separator is a dot. Supply the optional ```separator``` argument to the ```KeypathExtractor``` constructor to use a different separator:
 
 ```python
 keypaths = [
