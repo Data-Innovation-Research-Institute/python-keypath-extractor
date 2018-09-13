@@ -3,12 +3,11 @@ import dpath
 
 class KeypathExtractor:
 
-    separator = '.'
-
-    def __init__(self, keypaths):
+    def __init__(self, keypaths, separator='.'):
         if keypaths is None:
             raise ValueError('keypaths cannot be None')
         else:
+            self.separator = separator
             self.keypaths = keypaths
 
     def extract(self, data_object):

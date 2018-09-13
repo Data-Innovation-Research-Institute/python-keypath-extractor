@@ -36,7 +36,17 @@ class KeypathExtractorTest(unittest.TestCase):
         self.assertTrue('new data' in values)
         self.assertEqual(values['new data']['Door Count'], 4)
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
-        print(values)
+
+    def test_keypath_separator(self):
+        keypaths = [
+            ('car#number_of_doors', 'new data#Door Count'),
+            ('car#fuel_type#0', 'new data#Primary Fuel'),
+        ]
+        extractor = KeypathExtractor(keypaths, separator='#')
+        values = extractor.extract(self.data_object)
+        self.assertTrue('new data' in values)
+        self.assertEqual(values['new data']['Door Count'], 4)
+        self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
 
     def test_no_source_keypath(self):
         keypaths = [
@@ -54,7 +64,7 @@ class KeypathExtractorTest(unittest.TestCase):
 
     def test_invalid_source_keypath(self):
         keypaths = [
-            ('car.number_of_windows', 'Doors'),
+            ('car.number_of_windows', 'Windows Count'),
         ]
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, self.data_object)

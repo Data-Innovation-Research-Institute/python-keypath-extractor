@@ -60,3 +60,16 @@ After extraction, the ```values``` dictionary contains the following key/value p
 }
 
 ```
+
+## Separators
+
+The default separator is a dot. Supply the optional ```separator``` argument to the ```KeypathExtractor``` to use a different separator:
+
+```python
+keypaths = [
+    ('car#number_of_doors', 'new data#Door Count'),
+    ('car#fuel_type#0', 'new data#Primary Fuel'),
+]
+extractor = KeypathExtractor(keypaths, separator='#')
+values = extractor.extract(self.data_object)
+```
