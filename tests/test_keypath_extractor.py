@@ -90,5 +90,20 @@ class KeypathSeparatorTest(unittest.TestCase):
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
 
 
+class TransformerFunctionTest(unittest.TestCase):
+
+    @staticmethod
+    def double(value):
+        return value * 2
+
+    def test_transformer(self):
+        keypaths = [
+            ('car.number_of_doors', 'new data.Door Count', 'double'),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        values = extractor.extract(data_object)
+        self.assertEqual(values['new data']['Door Count'], 8)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -12,7 +12,11 @@ class KeypathExtractor:
 
     def extract(self, data_object):
         values = {}
-        for source_keypath, destination_keypath in self.keypaths:
+        for keypath in self.keypaths:
+            if len(keypath) == 2:
+                source_keypath, destination_keypath = keypath
+            elif len(keypath) == 3:
+                source_keypath, destination_keypath, transform_fn = keypath
             if source_keypath:
                 if destination_keypath:
                     value = dpath.util.get(data_object, source_keypath, separator=self.separator)
