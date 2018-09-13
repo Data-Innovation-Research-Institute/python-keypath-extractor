@@ -3,6 +3,8 @@ import dpath
 
 class KeypathExtractor:
 
+    separator = '.'
+
     def __init__(self, keypaths):
         if keypaths is None:
             raise ValueError('keypaths cannot be None')
@@ -11,12 +13,13 @@ class KeypathExtractor:
 
     def extract(self, data_object):
         values = {}
-        for key, keypath in self.keypaths:
-            if key:
-                if keypath:
-                    values[key] = dpath.util.get(data_object, keypath, separator='.')
+        for source_keypath, destination_keypath in self.keypaths:
+            if source_keypath:
+                if destination_keypath:
+                    value = dpath.util.get(data_object, source_keypath, separator=self.separator)
+                    dpath.util.new(values, destination_keypath, value, separator=self.separator)
                 else:
-                    raise KeyError('keypath cannot be None or empty')
+                    raise KeyError('destination keypath cannot be None or empty')
             else:
-                raise ValueError('key cannot be None or empty')
+                raise KeyError('source keypath cannot be None or empty')
         return values

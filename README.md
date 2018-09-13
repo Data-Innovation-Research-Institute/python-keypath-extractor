@@ -27,18 +27,18 @@ data_object = {
 }
 ```
 
-Keypaths are represented by two-element tuples that contain the name of the key for the extracted value, ```Doors```, and the keypath for extracting the value, ```car.number_of_doors```:
+Keypaths are represented by two-element tuples that contain the keypath for extracting the value, ```car.number_of_doors```, and the keypath for the extracted value in the new dictionary, ```new data.Door Count```:
 
 ```python
-('Doors', 'car.number_of_doors')
+('car.number_of_doors', 'new data.Door Count')
 ```
 
 Create a list of keypath tuples to use to extract values:
 
 ```python
 keypaths = [
-    ('Doors', 'car.number_of_doors'),
-    ('Primary Fuel', 'car.fuel_type.0'),
+    ('car.number_of_doors', 'new data.Door Count'),
+    ('car.fuel_type.0', 'new data.Primary Fuel'),
 ]
 ```
 
@@ -53,8 +53,10 @@ After extraction, the ```values``` dictionary contains the following key/value p
 
 ```python
 {
-    'Doors': 4, 
+  'new data': {
+    'Door Count': 4,
     'Primary Fuel': 'petrol'
+  }
 }
 
 ```

@@ -26,49 +26,49 @@ class KeypathExtractorTest(unittest.TestCase):
         values = extractor.extract(self.data_object)
         self.assertEqual(values, {})
 
-    def test_keypath(self):
+    def test_keypaths(self):
         keypaths = [
-            ('Doors', 'car.number_of_doors'),
-            ('Primary Fuel', 'car.fuel_type.0'),
+            ('car.number_of_doors', 'new data.Door Count'),
+            ('car.fuel_type.0', 'new data.Primary Fuel'),
         ]
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(self.data_object)
-        self.assertTrue('Doors' in values)
-        self.assertEqual(values['Doors'], 4)
-        self.assertTrue('Primary Fuel' in values)
-        self.assertEqual(values['Primary Fuel'], 'petrol')
+        self.assertTrue('new data' in values)
+        self.assertEqual(values['new data']['Door Count'], 4)
+        self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
+        print(values)
 
-    def test_no_key(self):
+    def test_no_source_keypath(self):
         keypaths = [
-            (None, 'car.number_of_doors'),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(ValueError, extractor.extract, self.data_object)
-
-    def test_empty_key(self):
-        keypaths = [
-            ('', 'car.number_of_doors'),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(ValueError, extractor.extract, self.data_object)
-
-    def test_no_keypath(self):
-        keypaths = [
-            ('Doors', None),
+            (None, 'Doors'),
         ]
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, self.data_object)
 
-    def test_empty_keypath(self):
+    def test_empty_source_keypath(self):
         keypaths = [
-            ('Doors', ''),
+            ('', 'Doors'),
         ]
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, self.data_object)
 
-    def test_invalid_keypath(self):
+    def test_invalid_source_keypath(self):
         keypaths = [
-            ('Doors', 'car.number_of_windows'),
+            ('car.number_of_windows', 'Doors'),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertRaises(KeyError, extractor.extract, self.data_object)
+
+    def test_no_destination_keypath(self):
+        keypaths = [
+            ('car.number_of_doors', None),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertRaises(KeyError, extractor.extract, self.data_object)
+
+    def test_empty_destination_keypath(self):
+        keypaths = [
+            ('car.number_of_doors', ''),
         ]
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, self.data_object)
