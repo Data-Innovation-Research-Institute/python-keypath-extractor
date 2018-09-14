@@ -27,7 +27,7 @@ data_object = {
 }
 ```
 
-Keypaths are represented by two-element tuples that contain the keypath for extracting the value, ```car.number_of_doors```, and the keypath for the extracted value in the new dictionary, ```new data.Door Count```:
+Keypaths are represented by tuples that contain a source keypath for extracting the value, ```car.number_of_doors```, and a destination keypath for the extracted value in the new dictionary, ```new data.Door Count```:
 
 ```python
 ('car.number_of_doors', 'new data.Door Count')
@@ -72,4 +72,30 @@ keypaths = [
 ]
 extractor = KeypathExtractor(keypaths, separator='#')
 values = extractor.extract(self.data_object)
+```
+
+## Value Transformers
+
+Keypath tuples may contain a third element which is a function that will be applied to the extracted value before it is stored at the destination keypath:
+
+```python
+def double(value):
+    return value * 2
+
+keypaths = [
+    ('car.number_of_doors', 'new data.Door Count', double),
+]
+extractor = KeypathExtractor(keypaths)
+values = extractor.extract(self.data_object)
+```
+
+After extraction, the ```Door Count``` key of the ```values``` dictionary will have the value 8, which is the value returned by the ```double``` function when given the value at the source keypath, 4:
+
+```python
+{
+  'new data': {
+    'Door Count': 8,
+  }
+}
+
 ```
