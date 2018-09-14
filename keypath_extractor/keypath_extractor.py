@@ -10,8 +10,9 @@ class KeypathExtractor:
             self.separator = separator
             self.keypaths = keypaths
 
-    def extract(self, data_object):
-        values = {}
+    def extract(self, data_object, values=None):
+        if not values:
+            values = {}
         for keypath in self.keypaths:
             if len(keypath) == 2:
                 source_keypath, destination_keypath = keypath

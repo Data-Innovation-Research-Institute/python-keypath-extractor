@@ -15,7 +15,7 @@ data_object = {
 }
 
 
-class BadKeypathsTest(unittest.TestCase):
+class BadKeypathsTests(unittest.TestCase):
 
     def test_no_keypaths(self):
         keypaths = None
@@ -71,7 +71,7 @@ class BadKeypathsTest(unittest.TestCase):
         self.assertRaises(ValueError, extractor.extract, data_object)
 
 
-class KeypathExtractionTest(unittest.TestCase):
+class KeypathExtractionTests(unittest.TestCase):
 
     def test_empty_keypaths(self):
         keypaths = []
@@ -87,6 +87,25 @@ class KeypathExtractionTest(unittest.TestCase):
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
         self.assertTrue('new data' in values)
+        self.assertEqual(values['new data']['Door Count'], 4)
+        self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
+
+
+class ReuseValueObjectTests(unittest.TestCase):
+
+    def test_reuse_value_object(self):
+        keypaths1 = [
+            ('car.number_of_doors', 'new data.Door Count'),
+        ]
+        extractor = KeypathExtractor(keypaths1)
+        values = extractor.extract(data_object)
+        self.assertEqual(values['new data']['Door Count'], 4)
+
+        keypaths2 = [
+            ('car.fuel_type.0', 'new data.Primary Fuel'),
+        ]
+        extractor = KeypathExtractor(keypaths2)
+        values = extractor.extract(data_object, values)
         self.assertEqual(values['new data']['Door Count'], 4)
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
 
@@ -109,7 +128,7 @@ def double(value):
     return value * 2
 
 
-class TransformerFunctionTest(unittest.TestCase):
+class TransformerFunctionTests(unittest.TestCase):
 
     @staticmethod
     def triple(value):
