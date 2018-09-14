@@ -56,6 +56,20 @@ class BadKeypathsTest(unittest.TestCase):
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, data_object)
 
+    def test_too_few_tuple_elements(self):
+        keypaths = [
+            'one',
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertRaises(ValueError, extractor.extract, data_object)
+
+    def test_too_many_tuple_elements(self):
+        keypaths = [
+            ('one', 'two', 'three', 'four'),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertRaises(ValueError, extractor.extract, data_object)
+
 
 class KeypathExtractionTest(unittest.TestCase):
 

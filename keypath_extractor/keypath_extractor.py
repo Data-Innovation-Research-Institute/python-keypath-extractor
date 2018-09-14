@@ -20,6 +20,8 @@ class KeypathExtractor:
                 source_keypath, destination_keypath, transformer_fn = keypath
                 if not callable(transformer_fn):
                     raise ValueError('transformer must be a callable')
+            else:
+                raise ValueError('keypath tuples have 2 or 3 elements')
             if source_keypath:
                 if destination_keypath:
                     value = dpath.util.get(data_object, source_keypath, separator=self.separator)
