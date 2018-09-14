@@ -71,7 +71,7 @@ keypaths = [
     ('car#fuel_type#0', 'new data#Primary Fuel'),
 ]
 extractor = KeypathExtractor(keypaths, separator='#')
-values = extractor.extract(self.data_object)
+values = extractor.extract(data_object)
 ```
 
 ## Value Transformers
@@ -86,10 +86,10 @@ keypaths = [
     ('car.number_of_doors', 'new data.Door Count', double),
 ]
 extractor = KeypathExtractor(keypaths)
-values = extractor.extract(self.data_object)
+values = extractor.extract(data_object)
 ```
 
-After extraction, the ```Door Count``` key of the ```values``` dictionary will have the value 8, which is the value returned by the ```double``` function when given the value at the source keypath, 4:
+After extraction, the destination keypath, ```new data.Door Count```, will have the value 8, which is the value returned by the ```double``` function when given the value at the source keypath, ```car.number_of_doors```, which is 4:
 
 ```python
 {
