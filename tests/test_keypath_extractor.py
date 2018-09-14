@@ -117,6 +117,21 @@ class TransformerFunctionTest(unittest.TestCase):
         values = extractor.extract(data_object)
         self.assertEqual(values['new data']['Capacity'], 6.0)
 
+    def test_no_transformer(self):
+        keypaths = [
+            ('car.engine_size', 'new data.Capacity', None),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertRaises(ValueError, extractor.extract, data_object)
+
+    def test_non_callable_transformer(self):
+        not_callable = 1
+        keypaths = [
+            ('car.engine_size', 'new data.Capacity', not_callable),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertRaises(ValueError, extractor.extract, data_object)
+
 
 if __name__ == '__main__':
     unittest.main()
