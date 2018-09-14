@@ -6,6 +6,7 @@ data_object = {
     'car': {
         'manufacturer': 'Ford',
         'number_of_doors': 4,
+        'engine_size': 2.0,
         'fuel_type': [
             'petrol',
             'diesel'
@@ -90,19 +91,31 @@ class KeypathSeparatorTest(unittest.TestCase):
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
 
 
+def double(value):
+    return value * 2
+
+
 class TransformerFunctionTest(unittest.TestCase):
 
     @staticmethod
-    def double(value):
-        return value * 2
+    def triple(value):
+        return value * 3
 
-    def test_transformer(self):
+    def test_transformer_function(self):
         keypaths = [
-            ('car.number_of_doors', 'new data.Door Count', 'double'),
+            ('car.number_of_doors', 'new data.Door Count', double),
         ]
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
         self.assertEqual(values['new data']['Door Count'], 8)
+
+    def test_transformer_method(self):
+        keypaths = [
+            ('car.engine_size', 'new data.Capacity', self.triple),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        values = extractor.extract(data_object)
+        self.assertEqual(values['new data']['Capacity'], 6.0)
 
 
 if __name__ == '__main__':
