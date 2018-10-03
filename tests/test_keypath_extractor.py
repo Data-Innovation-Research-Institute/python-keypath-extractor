@@ -10,7 +10,8 @@ data_object = {
         'fuel_type': [
             'petrol',
             'diesel'
-        ]
+        ],
+        'no_value': None
     }
 }
 
@@ -83,12 +84,14 @@ class KeypathExtractionTests(unittest.TestCase):
         keypaths = [
             ('car.number_of_doors', 'new data.Door Count'),
             ('car.fuel_type.0', 'new data.Primary Fuel'),
+            ('car.no_value', 'new data.No Value'),
         ]
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
         self.assertTrue('new data' in values)
         self.assertEqual(values['new data']['Door Count'], 4)
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
+        self.assertEqual(values['new data']['No Value'], None)
 
 
 class ReuseValueObjectTests(unittest.TestCase):
