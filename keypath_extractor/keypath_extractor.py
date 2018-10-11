@@ -42,7 +42,7 @@ class KeypathExtractor:
                         else:
                             value = None
                     if transformer_fn:
-                        value = transformer_fn(value, source_keypath=source_keypath, destination_keypath=destination_keypath)
+                        value = transformer_fn(value)
                     dpath.util.new(values, destination_keypath, value, separator=self.separator)
                 else:
                     raise KeyError('destination keypath cannot be None or empty')
