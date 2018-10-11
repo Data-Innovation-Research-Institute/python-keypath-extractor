@@ -3,6 +3,8 @@ import dpath
 
 class KeypathExtractor:
 
+    raise_on_non_existent_keypath = True
+
     def __init__(self, keypaths, separator='.'):
         if keypaths is None:
             raise ValueError('keypaths cannot be None')
@@ -10,9 +12,8 @@ class KeypathExtractor:
             self.separator = separator
             self.keypaths = keypaths
 
-    def has_keypath(self, data_object, keypath):
+    def has_keypath(self, data_object, source_keypath):
         try:
-            source_keypath, _ = keypath
             dpath.util.get(data_object, source_keypath, separator=self.separator)
             return True
         except KeyError:
@@ -33,7 +34,13 @@ class KeypathExtractor:
                 raise ValueError('keypath tuples have 2 or 3 elements')
             if source_keypath:
                 if destination_keypath:
-                    value = dpath.util.get(data_object, source_keypath, separator=self.separator)
+                    if self.raise_on_non_existent_keypath:
+                        value = dpath.util.get(data_object, source_keypath, separator=self.separator)
+                    else:
+                        if self.has_keypath(data_object, source_keypath):
+                            value = dpath.util.get(data_object, source_keypath, separator=self.separator)
+                        else:
+                            value = None
                     if transformer_fn:
                         value = transformer_fn(value)
                     dpath.util.new(values, destination_keypath, value, separator=self.separator)

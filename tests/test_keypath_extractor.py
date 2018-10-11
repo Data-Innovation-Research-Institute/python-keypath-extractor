@@ -43,6 +43,14 @@ class BadKeypathsTests(unittest.TestCase):
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, data_object)
 
+    def test_invalid_source_keypath_without_raising(self):
+        keypaths = [
+            ('car.number_of_windows', 'Windows Count'),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        extractor.raise_on_non_existent_keypath = False
+        extractor.extract(data_object)
+
     def test_no_destination_keypath(self):
         keypaths = [
             ('car.number_of_doors', None),
@@ -99,8 +107,8 @@ class KeypathExtractionTests(unittest.TestCase):
             ('car.number_of_windows', 'Windows Count'),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertTrue(extractor.has_keypath(data_object, keypaths[0]))
-        self.assertFalse(extractor.has_keypath(data_object, keypaths[1]))
+        self.assertTrue(extractor.has_keypath(data_object, keypaths[0][0]))
+        self.assertFalse(extractor.has_keypath(data_object, keypaths[1][0]))
 
 
 class ReuseValueObjectTests(unittest.TestCase):
