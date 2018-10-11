@@ -144,14 +144,14 @@ class KeypathSeparatorTest(unittest.TestCase):
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
 
 
-def double(value):
+def double(value, **kwargs):
     return value * 2
 
 
 class TransformerFunctionTests(unittest.TestCase):
 
     @staticmethod
-    def triple(value):
+    def triple(value, **kwargs):
         return value * 3
 
     def test_transformer_function(self):
