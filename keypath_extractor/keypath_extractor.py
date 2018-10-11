@@ -10,6 +10,14 @@ class KeypathExtractor:
             self.separator = separator
             self.keypaths = keypaths
 
+    def has_keypath(self, data_object, keypath):
+        try:
+            source_keypath, _ = keypath
+            dpath.util.get(data_object, source_keypath, separator=self.separator)
+            return True
+        except KeyError:
+            return False
+
     def extract(self, data_object, values=None):
         if not values:
             values = {}

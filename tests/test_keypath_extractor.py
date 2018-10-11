@@ -93,6 +93,15 @@ class KeypathExtractionTests(unittest.TestCase):
         self.assertEqual(values['new data']['Primary Fuel'], 'petrol')
         self.assertEqual(values['new data']['No Value'], None)
 
+    def test_has_keypath(self):
+        keypaths = [
+            ('car.number_of_doors', 'new data.Door Count'),
+            ('car.number_of_windows', 'Windows Count'),
+        ]
+        extractor = KeypathExtractor(keypaths)
+        self.assertTrue(extractor.has_keypath(data_object, keypaths[0]))
+        self.assertFalse(extractor.has_keypath(data_object, keypaths[1]))
+
 
 class ReuseValueObjectTests(unittest.TestCase):
 
