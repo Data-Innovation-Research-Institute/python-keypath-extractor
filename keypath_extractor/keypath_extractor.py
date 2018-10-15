@@ -1,10 +1,23 @@
 import dpath
 
 
+class Keypath:
+
+    def __init__(self, source_keypath, destination_keypath, transformer_fn=None, is_optional=False):
+        if not source_keypath:
+            raise KeyError('source keypath cannot be None or empty')
+        if not destination_keypath:
+            raise KeyError('destination keypath cannot be None or empty')
+        if transformer_fn:
+            if not callable(transformer_fn):
+                raise ValueError('transformer must be a callable')
+        self.source_keypath = source_keypath
+        self.destination_keypath = destination_keypath
+        self.transformer_fn = transformer_fn
+        self.is_optional = is_optional
+
+
 class KeypathExtractor:
-
-    raise_on_non_existent_keypath = True
-
     def __init__(self, keypaths, separator='.'):
         if keypaths is None:
             raise ValueError('keypaths cannot be None')
@@ -23,29 +36,15 @@ class KeypathExtractor:
         if not values:
             values = {}
         for keypath in self.keypaths:
-            if len(keypath) == 2:
-                source_keypath, destination_keypath = keypath
-                transformer_fn = None
-            elif len(keypath) == 3:
-                source_keypath, destination_keypath, transformer_fn = keypath
-                if not callable(transformer_fn):
-                    raise ValueError('transformer must be a callable')
+            if not keypath.is_optional:
+                value = dpath.util.get(data_object, keypath.source_keypath, separator=self.separator)
             else:
-                raise ValueError('keypath tuples have 2 or 3 elements')
-            if source_keypath:
-                if destination_keypath:
-                    if self.raise_on_non_existent_keypath:
-                        value = dpath.util.get(data_object, source_keypath, separator=self.separator)
-                    else:
-                        if self.has_keypath(data_object, source_keypath):
-                            value = dpath.util.get(data_object, source_keypath, separator=self.separator)
-                        else:
-                            value = None
-                    if transformer_fn:
-                        value = transformer_fn(value)
-                    dpath.util.new(values, destination_keypath, value, separator=self.separator)
+                if self.has_keypath(data_object, keypath.source_keypath):
+                    value = dpath.util.get(data_object, keypath.source_keypath, separator=self.separator)
                 else:
-                    raise KeyError('destination keypath cannot be None or empty')
-            else:
-                raise KeyError('source keypath cannot be None or empty')
+                    value = None
+            if keypath.transformer_fn:
+                value = keypath.transformer_fn(value)
+            dpath.util.new(values, keypath.destination_keypath, value, separator=self.separator)
+
         return values

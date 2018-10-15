@@ -1,6 +1,7 @@
 import unittest
 
 from keypath_extractor import KeypathExtractor
+from keypath_extractor import Keypath
 
 data_object = {
     'car': {
@@ -23,61 +24,30 @@ class BadKeypathsTests(unittest.TestCase):
         self.assertRaises(ValueError, KeypathExtractor, keypaths)
 
     def test_no_source_keypath(self):
-        keypaths = [
-            (None, 'Doors'),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeyError, extractor.extract, data_object)
+        self.assertRaises(KeyError, Keypath, None, 'Doors')
 
     def test_empty_source_keypath(self):
-        keypaths = [
-            ('', 'Doors'),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeyError, extractor.extract, data_object)
+        self.assertRaises(KeyError, Keypath, '', 'Doors')
 
     def test_invalid_source_keypath(self):
         keypaths = [
-            ('car.number_of_windows', 'Windows Count'),
+            Keypath('car.number_of_windows', 'Windows Count'),
         ]
         extractor = KeypathExtractor(keypaths)
         self.assertRaises(KeyError, extractor.extract, data_object)
 
-    def test_invalid_source_keypath_without_raising(self):
+    def test_optional_keypath(self):
         keypaths = [
-            ('car.number_of_windows', 'Windows Count'),
+            Keypath('car.number_of_windows', 'Windows Count', is_optional=True),
         ]
         extractor = KeypathExtractor(keypaths)
-        extractor.raise_on_non_existent_keypath = False
         extractor.extract(data_object)
 
     def test_no_destination_keypath(self):
-        keypaths = [
-            ('car.number_of_doors', None),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeyError, extractor.extract, data_object)
+        self.assertRaises(KeyError, Keypath, 'car.number_of_doors', None)
 
     def test_empty_destination_keypath(self):
-        keypaths = [
-            ('car.number_of_doors', ''),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(KeyError, extractor.extract, data_object)
-
-    def test_too_few_tuple_elements(self):
-        keypaths = [
-            'one',
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(ValueError, extractor.extract, data_object)
-
-    def test_too_many_tuple_elements(self):
-        keypaths = [
-            ('one', 'two', 'three', 'four'),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(ValueError, extractor.extract, data_object)
+        self.assertRaises(KeyError, Keypath, 'car.number_of_doors', '')
 
 
 class KeypathExtractionTests(unittest.TestCase):
@@ -90,9 +60,9 @@ class KeypathExtractionTests(unittest.TestCase):
 
     def test_keypaths(self):
         keypaths = [
-            ('car.number_of_doors', 'new data.Door Count'),
-            ('car.fuel_type.0', 'new data.Primary Fuel'),
-            ('car.no_value', 'new data.No Value'),
+            Keypath('car.number_of_doors', 'new data.Door Count'),
+            Keypath('car.fuel_type.0', 'new data.Primary Fuel'),
+            Keypath('car.no_value', 'new data.No Value'),
         ]
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
@@ -103,26 +73,26 @@ class KeypathExtractionTests(unittest.TestCase):
 
     def test_has_keypath(self):
         keypaths = [
-            ('car.number_of_doors', 'new data.Door Count'),
-            ('car.number_of_windows', 'Windows Count'),
+            Keypath('car.number_of_doors', 'new data.Door Count'),
+            Keypath('car.number_of_windows', 'Windows Count'),
         ]
         extractor = KeypathExtractor(keypaths)
-        self.assertTrue(extractor.has_keypath(data_object, keypaths[0][0]))
-        self.assertFalse(extractor.has_keypath(data_object, keypaths[1][0]))
+        self.assertTrue(extractor.has_keypath(data_object, keypaths[0].source_keypath))
+        self.assertFalse(extractor.has_keypath(data_object, keypaths[1].source_keypath))
 
 
 class ReuseValueObjectTests(unittest.TestCase):
 
     def test_reuse_value_object(self):
         keypaths1 = [
-            ('car.number_of_doors', 'new data.Door Count'),
+            Keypath('car.number_of_doors', 'new data.Door Count'),
         ]
         extractor = KeypathExtractor(keypaths1)
         values = extractor.extract(data_object)
         self.assertEqual(values['new data']['Door Count'], 4)
 
         keypaths2 = [
-            ('car.fuel_type.0', 'new data.Primary Fuel'),
+            Keypath('car.fuel_type.0', 'new data.Primary Fuel'),
         ]
         extractor = KeypathExtractor(keypaths2)
         values = extractor.extract(data_object, values)
@@ -134,8 +104,8 @@ class KeypathSeparatorTest(unittest.TestCase):
 
     def test_keypath_separator(self):
         keypaths = [
-            ('car#number_of_doors', 'new data#Door Count'),
-            ('car#fuel_type#0', 'new data#Primary Fuel'),
+            Keypath('car#number_of_doors', 'new data#Door Count'),
+            Keypath('car#fuel_type#0', 'new data#Primary Fuel'),
         ]
         extractor = KeypathExtractor(keypaths, separator='#')
         values = extractor.extract(data_object)
@@ -156,7 +126,7 @@ class TransformerFunctionTests(unittest.TestCase):
 
     def test_transformer_function(self):
         keypaths = [
-            ('car.number_of_doors', 'new data.Door Count', double),
+            Keypath('car.number_of_doors', 'new data.Door Count', transformer_fn=double),
         ]
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
@@ -164,26 +134,15 @@ class TransformerFunctionTests(unittest.TestCase):
 
     def test_transformer_method(self):
         keypaths = [
-            ('car.engine_size', 'new data.Capacity', self.triple),
+            Keypath('car.engine_size', 'new data.Capacity', transformer_fn=self.triple),
         ]
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
         self.assertEqual(values['new data']['Capacity'], 6.0)
 
-    def test_no_transformer(self):
-        keypaths = [
-            ('car.engine_size', 'new data.Capacity', None),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(ValueError, extractor.extract, data_object)
-
     def test_non_callable_transformer(self):
         not_callable = 1
-        keypaths = [
-            ('car.engine_size', 'new data.Capacity', not_callable),
-        ]
-        extractor = KeypathExtractor(keypaths)
-        self.assertRaises(ValueError, extractor.extract, data_object)
+        self.assertRaises(ValueError, Keypath, 'car.engine_size', 'new data.Capacity', transformer_fn=not_callable)
 
 
 if __name__ == '__main__':
