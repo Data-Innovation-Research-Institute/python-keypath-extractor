@@ -6,10 +6,10 @@ Extract Python dictionary values with keypaths into a new dictionary.
 
 ## Use
 
-Import the ```KeypathExtractor``` class:
+Import the ```Keypath``` and ```KeypathExtractor``` classes:
 
 ```python
-from keypath_extractor import KeypathExtractor
+from keypath_extractor import Keypath, KeypathExtractor
 ```
 
 Create a dictionary to extract values from:
@@ -27,22 +27,22 @@ data_object = {
 }
 ```
 
-Keypaths are represented by tuples that contain a source keypath for extracting the value, ```car.number_of_doors```, and a destination keypath for the extracted value in the new dictionary, ```new data.Door Count```:
+Keypaths are represented by `Keypath` objects that contain a source keypath for extracting the value, ```car.number_of_doors```, and a destination keypath for the extracted value in the new dictionary, ```new data.Door Count```:
 
 ```python
-('car.number_of_doors', 'new data.Door Count')
+Keypath('car.number_of_doors', 'new data.Door Count')
 ```
 
-Create a list of keypath tuples to use to extract values:
+Create a list of keypath objects to use to extract values:
 
 ```python
 keypaths = [
-    ('car.number_of_doors', 'new data.Door Count'),
-    ('car.fuel_type.0', 'new data.Primary Fuel'),
+    Keypath('car.number_of_doors', 'new data.Door Count'),
+    Keypath('car.fuel_type.0', 'new data.Primary Fuel'),
 ]
 ```
 
-Create an extractor with the list of keypath tuples and extract the values:
+Create an extractor with the list of keypath objects and extract the values:
 
 ```python
 extractor = KeypathExtractor(keypaths)
@@ -67,8 +67,8 @@ The default separator is a dot. Supply the optional ```separator``` argument to 
 
 ```python
 keypaths = [
-    ('car#number_of_doors', 'new data#Door Count'),
-    ('car#fuel_type#0', 'new data#Primary Fuel'),
+    Keypath('car#number_of_doors', 'new data#Door Count'),
+    Keypath('car#fuel_type#0', 'new data#Primary Fuel'),
 ]
 extractor = KeypathExtractor(keypaths, separator='#')
 values = extractor.extract(data_object)
@@ -76,14 +76,14 @@ values = extractor.extract(data_object)
 
 ## Value Transformers
 
-Keypath tuples may contain a third element which is a function that will be applied to the extracted value before it is stored at the destination keypath:
+`Keypath` objects may contain an optional `transformer_fn` parameter which is a function that will be applied to the extracted value before it is stored at the destination keypath:
 
 ```python
 def double(value):
     return value * 2
 
 keypaths = [
-    ('car.number_of_doors', 'new data.Door Count', double),
+    Keypath('car.number_of_doors', 'new data.Door Count', transformer_fn=double),
 ]
 extractor = KeypathExtractor(keypaths)
 values = extractor.extract(data_object)
