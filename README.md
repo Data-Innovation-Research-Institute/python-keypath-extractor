@@ -4,6 +4,12 @@
 
 Extract Python dictionary values with keypaths into a new dictionary.
 
+## Install
+
+```bash
+pip install git+https://github.com/DrJeffreyMorgan/python-keypath-extractor.git
+```
+
 ## Use
 
 Import the ```Keypath``` and ```KeypathExtractor``` classes:
