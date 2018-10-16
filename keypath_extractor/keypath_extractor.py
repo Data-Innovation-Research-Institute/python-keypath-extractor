@@ -16,11 +16,9 @@ class Keypath:
 
 class KeypathExtractor:
     def __init__(self, keypaths, separator='.'):
-        if keypaths is None:
-            raise ValueError('keypaths cannot be None')
-        else:
-            self.separator = separator
-            self.keypaths = keypaths
+        assert keypaths or keypaths == [], 'keypaths cannot be None'
+        self.separator = separator
+        self.keypaths = keypaths
 
     def has_keypath(self, data_object, source_keypath):
         try:
