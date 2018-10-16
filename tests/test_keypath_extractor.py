@@ -19,16 +19,6 @@ data_object = {
 
 class BadKeypathsTests(unittest.TestCase):
 
-    def test_no_keypaths(self):
-        keypaths = None
-        self.assertRaises(ValueError, KeypathExtractor, keypaths)
-
-    def test_no_source_keypath(self):
-        self.assertRaises(KeyError, Keypath, None, 'Doors')
-
-    def test_empty_source_keypath(self):
-        self.assertRaises(KeyError, Keypath, '', 'Doors')
-
     def test_invalid_source_keypath(self):
         keypaths = [
             Keypath('car.number_of_windows', 'Windows Count'),
@@ -42,12 +32,6 @@ class BadKeypathsTests(unittest.TestCase):
         ]
         extractor = KeypathExtractor(keypaths)
         extractor.extract(data_object)
-
-    def test_no_destination_keypath(self):
-        self.assertRaises(KeyError, Keypath, 'car.number_of_doors', None)
-
-    def test_empty_destination_keypath(self):
-        self.assertRaises(KeyError, Keypath, 'car.number_of_doors', '')
 
 
 class KeypathExtractionTests(unittest.TestCase):
@@ -139,10 +123,6 @@ class TransformerFunctionTests(unittest.TestCase):
         extractor = KeypathExtractor(keypaths)
         values = extractor.extract(data_object)
         self.assertEqual(values['new data']['Capacity'], 6.0)
-
-    def test_non_callable_transformer(self):
-        not_callable = 1
-        self.assertRaises(ValueError, Keypath, 'car.engine_size', 'new data.Capacity', transformer_fn=not_callable)
 
 
 if __name__ == '__main__':

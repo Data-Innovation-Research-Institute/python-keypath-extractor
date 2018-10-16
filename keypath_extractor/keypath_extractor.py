@@ -4,13 +4,10 @@ import dpath
 class Keypath:
 
     def __init__(self, source_keypath, destination_keypath, transformer_fn=None, is_optional=False):
-        if not source_keypath:
-            raise KeyError('source keypath cannot be None or empty')
-        if not destination_keypath:
-            raise KeyError('destination keypath cannot be None or empty')
+        assert source_keypath, 'source keypath cannot be None or empty'
+        assert destination_keypath, 'destination keypath cannot be None or empty'
         if transformer_fn:
-            if not callable(transformer_fn):
-                raise ValueError('transformer must be a callable')
+            assert callable(transformer_fn), 'transformer must be a callable'
         self.source_keypath = source_keypath
         self.destination_keypath = destination_keypath
         self.transformer_fn = transformer_fn
