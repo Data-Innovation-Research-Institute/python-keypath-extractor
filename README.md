@@ -1,13 +1,13 @@
 # python-keypath-extractor
 
-![Travis (.org)](https://img.shields.io/travis/DrJeffreyMorgan/python-keypath-extractor.svg)
+![Travis (.org)](https://img.shields.io/travis/Data-Innovation-Research-Institute/python-keypath-extractor.svg)
 
 Extract Python dictionary values with keypaths into a new dictionary.
 
 ## Install
 
 ```bash
-pip install git+https://github.com/DrJeffreyMorgan/python-keypath-extractor.git
+pip install git+https://github.com/Data-Innovation-Research-Institute/python-keypath-extractor.git
 ```
 
 ## Use
